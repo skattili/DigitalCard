@@ -1,0 +1,196 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dr. Sasi Kiran Attili - Digital Visiting Card</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #1e3a8a, #60a5fa);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      padding: 20px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .profile-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0 auto;
+      object-fit: cover;
+      border: 3px solid #1e3a8a;
+    }
+    h1 {
+      font-size: 24px;
+      margin: 10px 0;
+      color: #1e3a8a;
+    }
+    p {
+      font-size: 16px;
+      color: #666;
+      margin: 5px 0;
+    }
+    .contact-info {
+      margin: 20px 0;
+    }
+    .contact-info a {
+      color: #1e40af;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .contact-info a:hover {
+      color: #1e3a8a;
+    }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .social-links a {
+      color: #1e40af;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+    .social-links a:hover {
+      color: #1e3a8a;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #1e40af;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 25px;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+    .button:hover {
+      background: #1e3a8a;
+    }
+    .qr-code {
+      margin-top: 10px;
+      width: 100px;
+      height: 100px;
+    }
+    .qr-header {
+      font-size: 14px;
+      color: #1e3a8a;
+      margin-top: 20px;
+      margin-bottom: 5px;
+    }
+    .address {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="https://www.visakhaskinclinic.com/wp-content/uploads/2014/03/364x352.png" alt="Profile Picture" class="profile-img">
+    <h1>Dr. Sasi Kiran Attili</h1>
+    <p>Consultant Dermatologist, Cosmetic Surgeon & Dermatopathologist</p>
+    <p>Visakha Institute of Skin & Allergy</p>
+    <p class="address">16-1-22/3, Collector's Office to Beach Approach (down) Road,<br>Opp. Apex Hospital, Maharanipeta,<br>Visakhapatnam, Andhra Pradesh 530002</p>
+    <div class="contact-info">
+      <p><a href="tel:+917799350193">+91 77993 50193</a></p>
+      <p><a href="mailto:welcome@visakhaskinclinic.com">welcome@visakhaskinclinic.com</a></p>
+      <p><a href="https://www.visakhaskinclinic.com" target="_blank">www.visakhaskinclinic.com</a></p>
+      <p><a href="https://www.onlineskinspecialist.com" target="_blank">www.onlineskinspecialist.com</a></p>
+    </div>
+    <div class="social-links">
+      <a href="https://www.facebook.com/pg/visakhaskinclinic/reviews/?ref=page_internal" target="_blank">Facebook</a>
+      <a href="https://x.com/online_skin" target="_blank">Twitter</a>
+      <a href="https://www.instagram.com/dr_sasi_k_attili/" target="_blank">Instagram</a>
+      <a href="https://www.practo.com/visakhapatnam/clinic/visakha-institute-of-skin-and-allergy-maharani-peta" target="_blank">Practo</a>
+      <a href="https://jsdl.in/DT-62WECB7I" target="_blank">Justdial</a>
+    </div>
+    <a href="#" class="button" onclick="downloadVCard()">Download vCard</a>
+    <p class="qr-header">Google Maps Location</p>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://g.co/kgs/n9t1Q6t" alt="QR Code" class="qr-code">
+  </div>
+
+  <script>
+    // Function to download vCard
+    function downloadVCard() {
+      const vCardData = `
+BEGIN:VCARD
+VERSION:3.0
+FN:Dr. Sasi Kiran Attili
+ORG:Visakha Institute of Skin & Allergy
+TITLE:Consultant Dermatologist, Cosmetic Surgeon & Dermatopathologist
+TEL;TYPE=WORK,VOICE:+917799350193
+EMAIL;TYPE=WORK:welcome@visakhaskinclinic.com
+URL:https://www.visakhaskinclinic.com
+ADR;TYPE=WORK:;;16-1-22/3, Collector's Office to Beach Approach (down) Road, Opposite Apex Hospital, Maharanipeta;Visakhapatnam;Andhra Pradesh;530002;India
+END:VCARD
+      `;
+      const blob = new Blob([vCardData], { type: 'text/vcard' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'dr_sasi_kiran_attili.vcf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
